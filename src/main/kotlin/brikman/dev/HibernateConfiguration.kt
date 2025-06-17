@@ -15,17 +15,19 @@ class HibernateConfiguration {
         val config: Configuration = Configuration()
 
         config
+            .addAnnotatedClass(Profile::class.java)
             .addAnnotatedClass(Student::class.java)
+            .addAnnotatedClass(Group::class.java)
             .addPackage("brikman.dev")
             .setProperty("hibernate.connection.driver_class", "org.postgresql.Driver")
             .setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/postgres")
             .setProperty("hibernate.connection.username", "postgres")
             .setProperty("hibernate.connection.password", "postgres")
             .setProperty("hibernate.hbm2ddl.auto", "create")
-//            .setProperty("hibernate.show_sql", "true")
-//            .setProperty("hibernate.format_sql", "true")
-//            .setProperty("hibernate.use_sql_comments", "true")
-//            .setProperty("hibernate.type", "trace")
+            .setProperty("hibernate.show_sql", "true")
+            .setProperty("hibernate.format_sql", "true")
+            .setProperty("hibernate.use_sql_comments", "true")
+            .setProperty("hibernate.type", "trace")
 
 
         return config.buildSessionFactory()

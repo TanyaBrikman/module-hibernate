@@ -1,45 +1,46 @@
 package brikman.dev
 
+import brikman.dev.service.GroupService
+import brikman.dev.service.ProfileService
+import brikman.dev.service.StudentService
 import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import java.time.LocalDateTime
 
 fun main() {
     val context = AnnotationConfigApplicationContext("brikman.dev")
+    val sessionFactory = context.getBean(SessionFactory::class.java)
+    val studentService: StudentService = context.getBean(StudentService::class.java)
+    val profileService: ProfileService = context.getBean(ProfileService::class.java)
+    val groupService: GroupService = context.getBean(GroupService::class.java)
 
-    val sessionFactory: SessionFactory = context.getBean(SessionFactory::class.java)
+    var group1 = groupService.saveGroup("1", 2024L)
+    var group2 = groupService.saveGroup("2", 2025L)
 
-    val session: Session = sessionFactory.openSession()
+    val student1 = Student(name = "Tommy", age = 2, profile = null, group = group1 )
+    val student2 = Student(name = "Jerry", age = 6, profile = null, group = group1)
 
-    val student1 = Student(name = "Tom", age = 22)
-    val student2 = Student(name = "Jerry", age = 20)
+    studentService.saveStudent(student1)
+    studentService.saveStudent(student2)
 
-    session.beginTransaction()
-    session.persist(student1)
-    session.persist(student2)
-    session.transaction.commit()
+    val profile1 = Profile(
+        bio = "Student, 1 group",
+        lastSeenTime = LocalDateTime.now(),
+        student = student1,
+    )
+    val profile2 = Profile(
+        bio = "Student, 2 group",
+        lastSeenTime = LocalDateTime.now(),
+        student = student2,
+    )
 
-    val studentById: Student = session.get(Student::class.java, 2L)
+    profileService.saveProfile(profile1)
+    profileService.saveProfile(profile2)
+    profileService.deleteProfile(profile2)
 
-    println("student: $studentById")
-
-    val studentById2: Student = session.createQuery("FROM Student WHERE id = :id", Student::class.java).setParameter("id", 2L).uniqueResult()
-
-    println("student: $studentById2")
-
-    session.beginTransaction()
-    val studentForUpdate:Student = session.get(Student::class.java, 1L)
-    studentForUpdate.name = "Tommy"
-    studentForUpdate.age = 30
-    session.transaction.commit()
-
-    session.beginTransaction()
-    val studentForDelete: Student = session.createQuery("FROM Student  WHERE age = :age", Student::class.java).setParameter("age", 20).uniqueResult()
-    session.remove(studentForDelete)
-
-    session.transaction.commit()
+    groupService.findAllWithStudents()
 
 
 
-    session.close()
 }
