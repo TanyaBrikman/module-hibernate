@@ -1,7 +1,7 @@
 package brikman.dev.service
 
-import brikman.dev.Profile
-import brikman.dev.TransactionHelper
+import brikman.dev.entity.Profile
+import brikman.dev.util.TransactionHelper
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Service
 
@@ -16,6 +16,6 @@ class  ProfileService(
     }
 
     fun deleteProfile(profile: Profile) {
-       transactionHelper.transaction { it.remove(profile) }
+       transactionHelper.transaction {  }
     }
 }

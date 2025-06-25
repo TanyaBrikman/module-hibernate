@@ -1,4 +1,4 @@
-package brikman.dev
+package brikman.dev.util
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
